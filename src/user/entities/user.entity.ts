@@ -41,4 +41,10 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  toJSON() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...result } = this;
+    return result;
+  }
 }
