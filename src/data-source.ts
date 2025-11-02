@@ -1,0 +1,17 @@
+import { DataSource } from 'typeorm';
+import { config } from 'dotenv';
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+config();
+
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.DATABASE_HOST || 'localhost',
+  port: parseInt(process.env.DATABASE_PORT || '5432'),
+  username: process.env.DATABASE_USER || 'livebid',
+  password: process.env.DATABASE_PASSWORD || 'livebid123',
+  database: process.env.DATABASE_NAME || 'livebid_dev',
+  entities: ['dist/**/*.entity{.ts,.js}'],
+  migrations: ['dist/migrations/*.js'],
+  synchronize: false,
+});
