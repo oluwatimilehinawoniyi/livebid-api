@@ -120,7 +120,7 @@ Content-Type: application/json
 **Create Auction**
 
 ```http
-POST /auctions?sellerId={user-id}
+POST /auctions
 Content-Type: application/json
 
 {
