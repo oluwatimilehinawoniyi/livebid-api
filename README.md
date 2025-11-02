@@ -1,98 +1,213 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# LiveBid API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Real-time auction platform where users bid on items, with automatic payment processing when auctions end.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## What This Is
 
-## Description
+Backend API for an auction system. Users can create auctions, place bids in real-time via WebSockets, and winners get charged automatically through Paystack.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Built to learn WebSockets, Redis patterns, and payment processing - not just another CRUD app.
 
-## Project setup
+## Tech Stack
 
-```bash
-$ pnpm install
-```
+- **NestJS** - Because TypeScript + decorators = Spring Boot vibes
+- **PostgreSQL** - Relational data (auctions, users, bids)
+- **TypeORM** - Migrations and entities
+- **Redis** - Caching, pub/sub, distributed locks
+- **Socket.io** - Real-time bidding
+- **Paystack** - Payment processing
+- **Bull** - Job queues for scheduled tasks
+- **Docker** - Local development
 
-## Compile and run the project
+<!-- ## Current Status
 
-```bash
-# development
-$ pnpm run start
+**Completed:**
 
-# watch mode
-$ pnpm run start:dev
+- ✅ User registration & login (bcrypt password hashing)
+- ✅ Auction CRUD operations
+- ✅ Database migrations
+- ✅ Docker setup
 
-# production mode
-$ pnpm run start:prod
-```
+**In Progress:**
 
-## Run tests
+- 🔨 JWT authentication
+- 🔨 WebSocket bidding
+- 🔨 Payment integration -->
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Docker Desktop
+- pnpm (or npm)
+
+### Installation
 
 ```bash
-# unit tests
-$ pnpm run test
+# Clone repo
+git clone https://github.com/oluwatimilehinawoniyi/livebid-api.git
+cd livebid-api
 
-# e2e tests
-$ pnpm run test:e2e
+# Install dependencies
+pnpm install
 
-# test coverage
-$ pnpm run test:cov
+# Copy env file
+cp .env.example .env
+
+# Start database & redis
+docker-compose up -d
+
+# Run migrations
+pnpm run build
+pnpx typeorm migration:run -d dist/data-source.js
+
+# Start dev server
+pnpm run start:dev
 ```
 
-## Deployment
+Server runs on `http://localhost:3000`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Database Commands
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# Generate migration after entity changes
+pnpx typeorm migration:generate src/migrations/MigrationName -d dist/data-source.js
+
+# Run migrations
+pnpx typeorm migration:run -d dist/data-source.js
+
+# Revert last migration
+pnpx typeorm migration:revert -d dist/data-source.js
+
+# Check database tables
+docker exec -it livebid-postgres psql -U livebid -d livebid_dev -c "\dt"
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## API Endpoints
 
-## Resources
+### Authentication
 
-Check out a few resources that may come in handy when working with NestJS:
+**Register**
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```http
+POST /auth/register
+Content-Type: application/json
 
-## Support
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "role": "bidder"
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Login**
 
-## Stay in touch
+```http
+POST /auth/login
+Content-Type: application/json
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+### Auctions
+
+**Create Auction**
+
+```http
+POST /auctions?sellerId={user-id}
+Content-Type: application/json
+
+{
+  "title": "Vintage Guitar",
+  "description": "1960s Fender Stratocaster",
+  "startPrice": 1000,
+  "startTime": "2025-11-10T10:00:00Z",
+  "endTime": "2025-11-15T10:00:00Z"
+}
+```
+
+**Get All Auctions**
+
+```http
+GET /auctions
+```
+
+**Get Single Auction**
+
+```http
+GET /auctions/{id}
+```
+
+**Update Auction**
+
+```http
+PATCH /auctions/{id}
+Content-Type: application/json
+
+{
+  "title": "Updated Title"
+}
+```
+
+**Delete Auction**
+
+```http
+DELETE /auctions/{id}
+```
+
+## Project Structure
+
+```
+src/
+├── auction/
+│   ├── dto/
+│   ├── entities/
+│   ├── auction.controller.ts
+│   ├── auction.service.ts
+│   └── auction.module.ts
+├── user/
+│   ├── dto/
+│   ├── entities/
+│   ├── user.controller.ts
+│   ├── user.service.ts
+│   └── user.module.ts
+├── migrations/
+├── app.module.ts
+└── main.ts
+```
+
+Each feature is a module with its own controllers, services, and entities.
+
+<!-- Like a Spring Boot modulith but with explicit `@Module` declarations.
+
+## What's Coming
+
+**Weekend 2:** JWT authentication + route guards
+**Weekend 3:** WebSocket setup + real-time bid broadcasting
+**Weekend 4:** Redis distributed locks (prevent race conditions)
+**Weekend 5:** Auto-bid system (proxy bidding)
+**Weekend 6:** Paystack payment integration
+**Weekend 7:** RBAC + admin features
+**Weekend 8:** Testing + deployment -->
+
+## Why I Built This
+
+- Learn real-time systems (WebSockets)
+- Master Redis patterns beyond basic caching
+- Implement payment flows with escrow logic
+- Build something more complex than CRUD
+- Practice system design for interviews
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT - do whatever you want with it
+
+---
+
+Built by Oluwatimilehin Awoniyi | [GitHub](https://github.com/oluwatimilehinawoniyi) | [LinkedIn](https://www.linkedin.com/in/oluwatimilehin-awoniyi/)
