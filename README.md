@@ -8,6 +8,23 @@ Backend API for an auction system. Users can create auctions, place bids in real
 
 Built to learn WebSockets, Redis patterns, and payment processing - not just another CRUD app.
 
+## Architecture
+
+LiveBid uses a microservices architecture:
+
+- **Auth Service** (NestJS, Port 3001) - User management, JWT authentication
+- **Auction Service** (NestJS, Port 3002) - Auctions, bidding, WebSockets
+- **Payment Service** (Spring Boot, Port 8080) - Payment processing [Coming Soon]
+- **API Gateway** (NestJS, Port 3000) - Entry point, JWT validation [Coming Soon]
+
+Each service has its own database:
+
+- `auth_db` (Postgres, Port 5432)
+- `auction_db` (Postgres, Port 5433)
+- `payment_db` (Postgres, Port 5434)
+
+Services communicate via REST APIs and Redis Pub/Sub.
+
 ## Tech Stack
 
 - **NestJS** - Because TypeScript + decorators = Spring Boot vibes
@@ -40,49 +57,41 @@ Built to learn WebSockets, Redis patterns, and payment processing - not just ano
 
 - Node.js 18+
 - Docker Desktop
-- pnpm (or npm)
+- pnpm
 
-### Installation
+### Quick Start
 
 ```bash
 # Clone repo
 git clone https://github.com/oluwatimilehinawoniyi/livebid-api.git
+
 cd livebid-api
 
-# Install dependencies
-pnpm install
-
-# Copy env file
-cp .env.example .env
-
-# Start database & redis
+# Start databases
 docker-compose up -d
 
-# Run migrations
+# Install root dependencies (optional, for convenience scripts)
+pnpm install
+
+# Start Auth Service
+cd services/auth-service
+pnpm install
 pnpm run build
 pnpx typeorm migration:run -d dist/data-source.js
+pnpm run start:dev
 
-# Start dev server
+# In another terminal, start Auction Service
+cd services/auction-service
+pnpm install
+pnpm run build
+pnpx typeorm migration:run -d dist/data-source.js
 pnpm run start:dev
 ```
 
-Server runs on `http://localhost:3000`
+Services running:
 
-### Database Commands
-
-```bash
-# Generate migration after entity changes
-pnpx typeorm migration:generate src/migrations/MigrationName -d dist/data-source.js
-
-# Run migrations
-pnpx typeorm migration:run -d dist/data-source.js
-
-# Revert last migration
-pnpx typeorm migration:revert -d dist/data-source.js
-
-# Check database tables
-docker exec -it livebid-postgres psql -U livebid -d livebid_dev -c "\dt"
-```
+- Auth Service: `http://localhost:3001`
+- Auction Service: `http://localhost:3002`
 
 ## API Endpoints
 
