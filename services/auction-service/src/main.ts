@@ -12,6 +12,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3002);
+  console.log(`Auction Service running on port 3002`);
+
 }
 bootstrap();

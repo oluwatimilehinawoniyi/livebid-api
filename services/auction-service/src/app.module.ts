@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
 import { AuctionModule } from './auction/auction.module';
 
 @Module({
@@ -20,7 +19,6 @@ import { AuctionModule } from './auction/auction.module';
       synchronize: false,
       logging: true,
     }),
-    UserModule,
     AuctionModule,
   ],
   controllers: [],

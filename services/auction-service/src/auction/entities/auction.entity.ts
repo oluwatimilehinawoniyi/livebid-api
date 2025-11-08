@@ -1,13 +1,11 @@
-import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
 
 export enum AuctionStatus {
   DRAFT = 'draft',
@@ -22,12 +20,8 @@ export class Auction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'seller_id' })
   sellerId: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'sellerId' })
-  seller: User;
 
   @Column()
   title: string;
@@ -54,12 +48,8 @@ export class Auction {
   })
   status: AuctionStatus;
 
-  @Column({ nullable: true })
+  @Column({ name: 'winner_id', nullable: true })
   winnerId: string;
-
-  @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'winnerId' })
-  winner: User;
 
   @CreateDateColumn()
   createdAt: Date;
